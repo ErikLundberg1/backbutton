@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="se.kth.youeye">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera.any" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:requestLegacyExternalStorage="true" >
+
+        <!-- From inputtest -->
+        <service
+            android:name="se.kth.youeye.MainService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"> <!-- "Permission to bind an accessibility service" -->
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" /> <!-- "The AccessibilityService intent" -->
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" /> <!-- "Location of the file that contains the metadata for the service you're creating" (app/src/main/res/xml/input_test_service.xml) -->
+        </service>
+        <service android:name="se.kth.youeye.ForegroundService" />
+    </application>
+
+</manifest>

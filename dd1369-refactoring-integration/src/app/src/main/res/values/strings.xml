@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">YouEye</string>
+    <string name="next">Next</string>
+    <string name="click">Click</string>
+    <string name="preview_area">Preview area</string>
+    <string name ="back">Back</string>
+</resources>
