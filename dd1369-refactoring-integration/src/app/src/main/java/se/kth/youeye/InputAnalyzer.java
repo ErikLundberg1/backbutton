@@ -139,6 +139,7 @@ public class InputAnalyzer {
                 200, UINavigator.SELECT_NEXT));
         inputEvents.add(new InputEvent(Expression.EYES_OPEN, Expression.EYES_CLOSED,
                 800, UINavigator.CLICK));
+        inputEvents.add(new InputEvent(Expression.MOUTH_CLOSED, Expression.MOUTH_OPEN, 200, UINavigator.BACK)); // added for the functionality of detecting mouth open
         // We sort the events so that they will be evaluated in the correct order
         Collections.sort(inputEvents);
         Log.d(TAG, "Created and sorted inputEvents: " + inputEvents);

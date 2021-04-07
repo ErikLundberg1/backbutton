@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.face.Face;
+import com.google.mlkit.vision.face.FaceContour;
 import com.google.mlkit.vision.face.FaceDetection;
 import com.google.mlkit.vision.face.FaceDetector;
 import com.google.mlkit.vision.face.FaceDetectorOptions;
@@ -41,6 +42,7 @@ public class Expression {
     private final FaceLandmark mouthBottom;
     private final FaceLandmark mouthRight;
     private final FaceLandmark mouthLeft;
+    private final Float smilingProbability;
 
     private final Float eulerAngleX;
     private final Float eulerAngleY;
@@ -48,7 +50,7 @@ public class Expression {
 
     public Expression(Float leftEyeOpenProbability, Float rightEyeOpenProbability,
                       Float eulerAngleX, Float eulerAngleY, Float eulerAngleZ,
-                      FaceLandmark mouthBottom, FaceLandmark mouthRight, FaceLandmark mouthLeft) {
+                      FaceLandmark mouthBottom, FaceLandmark mouthRight, FaceLandmark mouthLeft, Float smilingProbability) {
         this.leftEyeOpenProbability = leftEyeOpenProbability;
         this.rightEyeOpenProbability = rightEyeOpenProbability;
 
@@ -59,6 +61,7 @@ public class Expression {
         this.mouthBottom = mouthBottom;
         this.mouthRight = mouthRight;
         this.mouthLeft = mouthLeft;
+        this.smilingProbability = smilingProbability;
 
         timestamp = System.currentTimeMillis();
     }
@@ -90,7 +93,8 @@ public class Expression {
 
     private boolean getMouthClosed() {
         //Just a somewhat logical code for the actual logic we'll implement later.
-        return mouthBottom.getPosition().y > (mouthRight.getPosition().y + mouthLeft.getPosition().y)/2;
+        //return mouthBottom.getPosition().y > (mouthRight.getPosition().y + mouthLeft.getPosition().y)/2;
+        return smilingProbability > 0.5;
     }
 
 
@@ -131,7 +135,8 @@ public class Expression {
                                             face.getHeadEulerAngleZ(),
                                             face.getLandmark(FaceLandmark.MOUTH_BOTTOM), // Should we change to just send the PointF and not the entire landmark?
                                             face.getLandmark(FaceLandmark.MOUTH_RIGHT),
-                                            face.getLandmark(FaceLandmark.MOUTH_LEFT));
+                                            face.getLandmark(FaceLandmark.MOUTH_LEFT),
+                                            face.getSmilingProbability());
                                     expressionCallback.handleExpression(expression);
                                 }
                                 imageProxy.close();

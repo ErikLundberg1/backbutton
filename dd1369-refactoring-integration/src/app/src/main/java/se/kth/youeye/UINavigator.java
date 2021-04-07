@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Queue;
 
+import static android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK;
 import static android.content.Context.WINDOW_SERVICE;
 
 /**
@@ -37,12 +38,13 @@ public class UINavigator {
 
     // We use the @IntDef notation to ensure safer handling of our our magic constants
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({NO_ACTION, SELECT_NEXT, CLICK})
+    @IntDef({NO_ACTION, SELECT_NEXT, CLICK, BACK})
     public @interface ActionTypeDef {}
     // Magic constant definitions
     public static final int NO_ACTION = 0; // event to act on
     public static final int SELECT_NEXT = 1; // event to act on
     public static final int CLICK = 2; // event to act on
+    public static final int BACK = 3; // universal back command
 
     private final MainService mainService;
     private final FrameLayout layout;
@@ -65,7 +67,7 @@ public class UINavigator {
         lp.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
         // Currently disabled since we can't press the debug buttons if the flag is set:
-        lp.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE; // To pass through touch events to the underlying window.
+        // lp.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE; // To pass through touch events to the underlying window.
         lp.width = WindowManager.LayoutParams.MATCH_PARENT; // Fill the screen.
         lp.height = WindowManager.LayoutParams.MATCH_PARENT;
         lp.gravity = Gravity.TOP;
@@ -105,12 +107,15 @@ public class UINavigator {
      */
     public void handleEvent(int eventType) {
         Log.d("click", "Handling event: " + eventType);
+
         switch (eventType) {
             case SELECT_NEXT:
                 selectNext();
                 break;
             case CLICK:
                 click();
+            case BACK:
+                mainService.performGlobalAction(GLOBAL_ACTION_BACK);
         }
     }
 
@@ -272,15 +277,14 @@ public class UINavigator {
     }
 
     /**
-     * Implements a debug button that on press will give a back press that works in all apps
+     * Implements a debug button that when pressed will give a back button press that works in all apps
      */
     private void configureBackButton() {
         Button clickButton = layout.findViewById(R.id.back);
         clickButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean result = mainService.performGlobalAction(1);
-                Log.d("Back button", Boolean.toString(result));
+                boolean result = mainService.performGlobalAction(GLOBAL_ACTION_BACK); // returns true if the command is successful
             }
         });
     }
